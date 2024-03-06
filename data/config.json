@@ -1,0 +1,11 @@
+{
+    "name":"习讯云配置文件",
+    "config":[
+        {
+            "version": "4.9.7",
+            "from":"app",
+            "platform": "android",
+            "key":""
+        }
+    ]
+}
