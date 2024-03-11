@@ -106,9 +106,8 @@ mothxiu：一个月的月休上限
 - data                   
   - `config.json`  习讯云配置文件
   - `user.json`   数据库任务程序存放用户的数据 
-- log
-  - `database.log`  数据库任务程序的日志(BUG：打包昨天的日志卡死)
-  - `task.log`   任务程序的日志(BUG：打包昨天的日志卡死)
+- tool             
+  - `jiexi.py`       快捷将文本格式化为COOKIE
 - `loglog.py`  调用的日志模块
 - README.md
 - requirements.txt
