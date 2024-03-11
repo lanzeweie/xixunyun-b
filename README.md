@@ -19,10 +19,10 @@ _✨ 超多用户实习打卡签到最终解决方案 ✨_
 - [习讯云自动化数据库+习讯云自动化签到任务库](#习讯云自动化数据库习讯云自动化签到任务库)
   - [介绍](#介绍)
   - [目录](#目录)
-    - [自动化数据库](#自动化数据库)
+    - [一、自动化数据库](#一自动化数据库)
       - [**从COOKIE中解析用户的必要数据**](#从cookie中解析用户的必要数据)
       - [**数据库建立方式与逻辑**](#数据库建立方式与逻辑)
-    - [自动化签到任务库](#自动化签到任务库)
+    - [二、自动化签到任务库](#二自动化签到任务库)
   - [使用方式](#使用方式)
     - [目录结构](#目录结构)
     - [配置填写](#配置填写)
@@ -33,7 +33,7 @@ _✨ 超多用户实习打卡签到最终解决方案 ✨_
       - [注意事项](#注意事项)
   - [推送](#推送)
 
-### 自动化数据库  
+### 一、自动化数据库  
 #### **从COOKIE中解析用户的必要数据**   
 `school_id` `name` `account` `model` `phone` `password` `time` `moth` `word_long` `word_latit` `word_name` `word_name_guishu` `home_latit` `home_long` `home_name` `home_name_guishu` `mothxiu` `mac`  
 
@@ -63,7 +63,7 @@ _✨ 超多用户实习打卡签到最终解决方案 ✨_
 ```
 school_id=837,name=小明,account=2151511,model=XiaoMI 15,phone=1818151815,password=!321Zhoujinhan,time=9:00,moth=2024-01:2024-06,word_long=131,word_latit=232,word_name=四川省成都市郫都区三和街道,word_name_guishu=四川省成都市郫都区,home_latit=30.72243,home_long=104.0337,home_name=四川省成都市金牛区欢乐谷,home_name_guishu=四川省成都市金牛区西华大道16号,mothxiu=5,mac=CA:DE:D9:FD:1E:F7   
 ```
-COOKIE 可以通过 `jiexi.py` 快捷把文字解析成COOKIE       
+COOKIE 可以通过 `tool/jiexi.py` 快捷把文字解析成COOKIE       
 ```
 python jiexi.py 
 ```   
@@ -74,7 +74,7 @@ python jiexi.py
 解析COOKIE，分析出用户的必要信息   
 使用此信息访问`习讯云`的`api`获得Token，以此验证必要信息是否正确，最后通过验证的信息进行数据库建立  
 
-### 自动化签到任务库
+### 二、自动化签到任务库
 _需要依赖数据库运行_  
 根据数据库将每一个用户都转为定时任务分发出去  
 **重要依据**  
@@ -166,11 +166,11 @@ python xixunyun_sign.py
 1.订阅仓库 
 青龙面板->订阅管理->创建订阅->复制粘贴到名称
 ```
-ql repo https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "tool/" "^usr_.*|data/" "" "json|py" 
+ql repo https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "" "^usr_.*|data/" "" "json|py" 
 ```
 如果失败则使用国内加速
 ```
-ql repo https://ghproxy.com/https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "tool/" "^usr_.*|data/" "" "json|py" 
+ql repo https://ghproxy.com/https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "" "^usr_.*|data/" "" "json|py" 
 ```
 最后再次在名称填写 习讯云打卡签到-B 即可 
 
