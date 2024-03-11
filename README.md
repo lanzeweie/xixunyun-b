@@ -63,6 +63,12 @@ _✨ 超多用户实习打卡签到最终解决方案 ✨_
 ```
 school_id=837,name=小明,account=2151511,model=XiaoMI 15,phone=1818151815,password=!321Zhoujinhan,time=9:00,moth=2024-01:2024-06,word_long=131,word_latit=232,word_name=四川省成都市郫都区三和街道,word_name_guishu=四川省成都市郫都区,home_latit=30.72243,home_long=104.0337,home_name=四川省成都市金牛区欢乐谷,home_name_guishu=四川省成都市金牛区西华大道16号,mothxiu=5,mac=CA:DE:D9:FD:1E:F7   
 ```
+COOKIE 可以通过 `jiexi.py` 快捷把文字解析成COOKIE       
+```
+python jiexi.py 
+```   
+<img src="./README/8.png" alt="解析成COOKIE">      
+<img src="./README/9.png" alt="COOKIE解析值">      
 
 #### **数据库建立方式与逻辑**     
 解析COOKIE，分析出用户的必要信息   
@@ -160,11 +166,11 @@ python xixunyun_sign.py
 1.订阅仓库 
 青龙面板->订阅管理->创建订阅->复制粘贴到名称
 ```
-ql repo https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "" "^usr_.*|data/" "" "json|py" 
+ql repo https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "tool/" "^usr_.*|data/" "" "json|py" 
 ```
 如果失败则使用国内加速
 ```
-ql repo https://ghproxy.com/https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "" "^usr_.*|data/" "" "json|py" 
+ql repo https://ghproxy.com/https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "tool/" "^usr_.*|data/" "" "json|py" 
 ```
 最后再次在名称填写 习讯云打卡签到-B 即可 
 
