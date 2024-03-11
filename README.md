@@ -10,9 +10,9 @@ _✨ 超多用户实习打卡签到最终解决方案 ✨_
 ## 介绍
 > 掌握用户的一些必要数据后就可以建立成数据库  
 使用数据库让自动化签到任务库异步分发出所有签到任务   
-支持`大规模数量用户` `不同用户不同时间签到` `模拟不定时提前签到` `支持随机休假`     
-支持`消息推送汇总`   
-~~支持 日志~~ (_日志打印支持，但是打包昨日日志函数BUG导致打包时发生卡循环，又因为青龙面板支持日志保存，所以本地日志功能未修复_)  
+支持`大规模数量用户` `不同用户不同时间签到` `模拟不定时提前签到` `支持随机休假``消息推送汇总`   
+支持`青龙面板一键订阅`      
+~~支持 日志 (日志打印支持，但是打包昨日日志函数BUG导致打包时发生卡循环，又因为青龙面板支持日志保存，所以本地日志功能未修复)~~
 
 ## 目录
 - [-XiXunYun-](#-xixunyun-)
@@ -28,12 +28,10 @@ _✨ 超多用户实习打卡签到最终解决方案 ✨_
     - [配置填写](#配置填写)
     - [本地运行](#本地运行)
     - [云端执行(青龙面板)  推荐此方法运行](#云端执行青龙面板--推荐此方法运行)
+      - [图文教程](#图文教程)
       - [定时任务](#定时任务)
       - [注意事项](#注意事项)
-  - [日志、推送](#日志推送)
-    - [打印](#打印)
-    - [日志](#日志)
-    - [推送](#推送)
+  - [推送](#推送)
 
 ### 自动化数据库  
 #### **从COOKIE中解析用户的必要数据**   
@@ -130,11 +128,15 @@ mothxiu：一个月的月休上限
             "version": "4.9.7",
             "from":"app",
             "platform": "android",
-            "key":"我是公钥，必须是习讯云认证的公钥，可以阅读习讯云网页版源码获得，可以赞赏此项目过的"
+            "key":"我是公钥，必须是习讯云认证的公钥，可以阅读习讯云网页版源码获得，也可以赞赏此项目获得(联系我)"
         }
     ]
 }
-```   
+```
+青龙面板同样修改    
+青龙面板->脚本管理->lanzeweie_xixunyun-b->data->config.json    
+<img src="./README/7.png" alt="青龙面板配置文件">  
+
 ### 本地运行 
 ```
 pip install -r  requirements.txt
@@ -156,32 +158,46 @@ python xixunyun_sign.py
 
 **使用教程**：  
 1.订阅仓库 
+青龙面板->订阅管理->创建订阅->复制粘贴到名称
 ```
-ql repo https://github.com/lanzeweie/xixunyun-b.git "data" "" "chinese_calendar"
+ql repo https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "" "^usr_.*|data/" "" "json|py" 
 ```
 如果失败则使用国内加速
 ```
-ql repo https://github.com/lanzeweie/xixunyun-b.git "data" "" "chinese_calendar"
+ql repo https://ghproxy.com/https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "" "^usr_.*|data/" "" "json|py" 
 ```
+最后再次在名称填写 习讯云打卡签到-B 即可 
+
 定时更新规则  
 一个月最后一天23点更新   
 `0 23 28-31 * *`
 
+最后点击运行即可   
+*需要打开自动创建定时任务*  
+
 2.配置环境变量   
+青龙面板->环境变量->新建变量   
 建立环境变量  `XIXUNYUN_COOKIE`  
 填写 COOKIE 即可，多个用户重复建立即可 
 
-3.注意事项  
+3.注意事项  (先尝试运行，出问题在手动安装)没有此库无法进行节假日休息    
 注意：青龙面板可能没有`chinese_calendar`库，需要手动安装    
 使用脚本安装 `chinese_calendar` 即可     
 ``` pip install chinese_calendar ```   
 
-例如：  
-
+#### 图文教程    
+1.订阅  
+<img src="./README/4.png" alt="订阅教程1" style=" margin-right: 10px;" width="400">    
+<img src="./README/5.png" alt="订阅教程2">  
+2.新建变量  
+<img src="./README/6.png" alt="新建变量" style=" margin-right: 10px;" width="400">  
 
 #### 定时任务
-强烈建议每日执行数据库 `xixunyun_cookie.py`   
-强烈建议在数据库执行后执行任务库 `xixunyun_sign.py`
+
+`xixunyun_sign.py` 是依据 `xixunyun_cookie.py` 的数据，所以 `xixunyun_cookie.py` 数据必须是最新，如果无法保证 数据永远最新，请让 `xixunyun_sign.py` 执行之前运行 `xixunyun_cookie.py`    
+例如：
+提前1分钟运行`xixunyun_cookie.py`  再运行 `xixunyun_sign.py`  
+<img src="./README/3.png" alt="定时任务">  
 
 #### 注意事项  
 一切都是为了模拟真实用户
@@ -189,19 +205,11 @@ _如果用户的签到时间**小于**任务库分配任务的时间则会立即
 _定时时间有小概率事件发生随机提前【1-5分钟】_  
 _有小概率发生不会休满一个月最大月休数_  
 
-## 日志、推送
-### 打印
-控制台会默认输出消息  
-### 日志  
-`loglog.py` 日志程序  
-`log\database.log` 数据库日志  
-`log\task.log` 任务库日志  
-日志自动会压缩昨天的日志成`zip`包(BUG未修复，压缩卡死)
-### 推送  
+
+## 推送  
 变量 `bot_message` 存放推送的信息   
-<img src="./README/1.jpg" alt="图片1" style="float: left; margin-right: 10px;" width="300">   
-<img src="./README/2.jpg" alt="图片2" style="float: left; margin-right: 10px;" width="300">      
+<img src="./README/1.jpg" alt="机器人推送1" style="float: left; margin-right: 10px;" width="300">   
+<img src="./README/2.jpg" alt="机器人推送2" style="float: left; margin-right: 10px;" width="300">      
 
 (青龙面板)      
 直接配置青龙面板本身的机器人推送即可  
-
