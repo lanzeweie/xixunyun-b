@@ -11,13 +11,11 @@ Update: 2024/3/11
 """
 
 import json
-#from loglog import XXYLogger
 from usr_ua import Xixunyun_ua
 from usr_token import Xixunyun_login
 import os
 import sys
 ####################################
-#logger = XXYLogger('database', log_file='database.log')
 weizhi = os.path.dirname(os.path.abspath(__file__))
 '''
 介绍：Xixunyun_cookie.py
@@ -80,23 +78,16 @@ def Env_cookie_format(Env_cookies):
     bot_message = "数据库具体信息\n"
     bot_message_error = 0
     bot_message_sure = 0
-    #logger.info('开始处理数据库')
-    #logloglog_text = ""
     cookies = len(Env_cookies)
-    #logloglog_text += f'("检测到环境变量中拥有【{cookies}】个cookie")\n'
     bot_message += f'总共【{cookies}】个 COOKIE\n'
     print("共有", cookies, "个cookie")
     # 格式化cookie
-    #logloglog_text += "开始格式化cookie"
-    #logger.info(#logloglog_text)
     
     print("开始格式化cookie任务")
     cookie_list = 0
     for Env_cookies_format in Env_cookies:
-        #logloglog_text = ""
         cookie_list += 1
         print(f"—————————————第{cookie_list}个———————————————\ncookie: {Env_cookies_format}\n")
-        #logloglog_text += (f"—————————————第{cookie_list}个———————————————\ncookie: {Env_cookies_format}\n")
         cookie_pairs = [pair.split('=') for pair in Env_cookies_format.split(',')]
         Env_cookies_value = {}
         try:
@@ -104,20 +95,16 @@ def Env_cookie_format(Env_cookies):
             Env_cookies_value = {key: value for key, value in cookie_pairs}
         except ValueError:
             # 如果无法格式化，跳出此cookie异常
-            #logloglog_text += f"无法格式化此cookie:{Env_cookies_format}\n"
             print("无法格式化此cookie:", Env_cookies_format)
             bot_message_error += 1
-            #logger.info(#logloglog_text)
             continue
         # 验证字典中是否缺少键
         required_keys = ['school_id', 'name', 'account', 'model', 'time', 'phone', 'password', 'moth', 'word_long', 'word_latit', 'word_name', 'word_name_guishu', 'home_long', 'home_latit', 'home_name', 'home_name_guishu', 'mothxiu', 'mac']
         missing_keys = [key for key in required_keys if key not in Env_cookies_value]
         if missing_keys:
             # 如果有缺少的键，跳出缺少此键的异常
-            #logloglog_text += f"缺少以下键:{missing_keys}\n"
             print("缺少以下键:", missing_keys)
             bot_message_error += 1
-            #logger.info(#logloglog_text+"\n")
             continue
         school_id = Env_cookies_value['school_id']
         name = Env_cookies_value['name']
@@ -145,44 +132,34 @@ def Env_cookie_format(Env_cookies):
                     user['school_id'] == str(school_id)):
                     return user
             return None
-        #logloglog_text += "正在验证用户是否存在于数据库中\n"
         # Check if the user exists
         existing_user = user_exists(name, account, school_id)
         
         if existing_user is not None:
-            #logloglog_text += f"{name} 用户存在于数据库中\n"
             print(f"{name} 用户存在于数据库中")
-            #logloglog_text += "正在验证Token是否可用\n"
             print("正在|验证Token是否可用")
             Token = (existing_user.get('token'))
             usr_ua_insp = Xixunyun_ua(Token,school_id).get_ua()
             usr_ua_insp_len = len(usr_ua_insp)
             if usr_ua_insp_len <= 3:
-                #logloglog_text += "用户Token已是激活状态\n"
                 bot_message_sure += 1
                 print("用户Token已是激活状态")
                 bot_message += f"{name} {account} 【成功】\n"
                 word_name_ua = usr_ua_insp[0]
                 word_long_ua = usr_ua_insp[1]
                 word_latit_ua = usr_ua_insp[2]
-                #logloglog_text += f"用户初次签到地址为：{word_name_ua}, 纬度：{word_latit_ua} 经度：{word_long_ua}\n"
                 print(f"用户初次签到地址为：{word_name_ua}, 经度：{word_long_ua}, 纬度：{word_latit_ua}")
             elif usr_ua_insp_len >3:
                 usr_ua_errow = usr_ua_insp
                 if usr_ua_errow == "请求异常":
                     print("请求异常")
-                    #logloglog_text += "请求异常\n"
-                    #logger.info(#logloglog_text)
                     bot_message_error += 1
                     continue
                 elif usr_ua_errow == "请求超时，可能是网络问题":
                     print("----------------出现请求超时情况，终止所有任务---------------------")
-                    #logloglog_text += "请求超时，可能是网络问题\n"
-                    #logger.info(#logloglog_text)
                     bot_message_error += 1
                     break
                 print("验证Token失败，可能是已经失效··········尝试重新获取")
-                #logloglog_text += "验证Token失败，可能是已经失效··········尝试重新获取\n"
                 #将新获得的token写入数据库中
                 usr_token_insp = Xixunyun_login(school_id, password, account, model, mac).get_token()
                 usr_token_insp_len = len(usr_token_insp)
@@ -193,46 +170,38 @@ def Env_cookie_format(Env_cookies):
                     with open(file_name, 'w', encoding='utf-8') as file:
                         json.dump(data, file, indent=2, ensure_ascii=False)
                     print("用户Token信息更新成功")
-                    #logloglog_text += "用户Token信息更新成功\n"
                     bot_message_sure += 1
                     bot_message += f"{name} {account} 【成功】\n"
                 else:
                     usr_token_errow = usr_token_insp
                     if usr_token_errow == "请求异常":
                         print("因为请求异常，用户Token更新失败")
-                        #logloglog_text += "因为请求异常，用户Token更新失败\n"
                         existing_user['jiuxu'] = False
                         with open(file_name, 'w', encoding='utf-8') as file:
                             json.dump(data, file, indent=2, ensure_ascii=False)
-                        #logger.info(#logloglog_text)
                         bot_message_error += 1
                         bot_message += f"{name} {account} 【失败】\n"
                         continue
                     elif usr_token_errow == "请求超时，可能是网络问题":
                         print("----------------出现请求超时情况，终止所有任务---------------------")
-                        #logloglog_text += "请求超时，可能是网络问题\n"
                         print("----------------出现请求超时情况，终止所有任务--------------------- 问题：get_token()")
                         bot_message += '出现请求超时情况，终止所有任务 问题：get_token()'
                         existing_user['jiuxu'] = False
                         with open(file_name, 'w', encoding='utf-8') as file:
                             json.dump(data, file, indent=2, ensure_ascii=False)
-                        #logger.info(#logloglog_text)
                         bot_message_error += 1
                         bot_message += f"{name} {account} 【失败】\n"
                         break
                     else:
                         print("错误Token回复，用户Token更新失败",usr_token_errow)
-                        #logloglog_text += f"错误Token回复，用户Token更新失败{usr_token_errow}\n"
                         existing_user['jiuxu'] = False
                         with open(file_name, 'w', encoding='utf-8') as file:
                             json.dump(data, file, indent=2, ensure_ascii=False)
-                        #logger.info(#logloglog_text)
                         bot_message_error += 1
                         bot_message += f"{name} {account} 【失败】\n"
                         continue
             else:
                 print(usr_ua_insp)
-                logloglog_text += f"意外错误{usr_ua_insp}\n"
                 existing_user['jiuxu'] = False
                 with open(file_name, 'w', encoding='utf-8') as file:
                     json.dump(data, file, indent=2, ensure_ascii=False)
@@ -258,8 +227,6 @@ def Env_cookie_format(Env_cookies):
                 'mac': mac
             }.items()):
                 print("用户基础数据已是最新")
-                #logloglog_text += "用户基础数据已是最新\n"
-                #logger.info(#logloglog_text)
             else:
                 for key, value in {
                     'model': model,
@@ -280,13 +247,10 @@ def Env_cookie_format(Env_cookies):
                 }.items():
                     existing_user[key] = value
                 print("用户信息基础数据与环境变量数据不一致，以环境变量数据为主······更新基础数据")
-                #logloglog_text += "用户信息基础数据与环境变量数据不一致，以环境变量数据为主······更新基础数据\n"
                 # Save the updated database back to the JSON file
                 with open(file_name, 'w', encoding='utf-8') as file:
                     json.dump(data, file, indent=2, ensure_ascii=False)
                     print("用户信息基础数据更新成功")
-                    #logloglog_text += "用户信息基础数据更新成功\n"
-                #logger.info(#logloglog_text)
                 continue
         else:
             usr_token_insp = Xixunyun_login(school_id, password, account, model, mac).get_token()
@@ -298,26 +262,19 @@ def Env_cookie_format(Env_cookies):
                 usr_token_errow = usr_token_insp
                 if usr_token_errow == "请求异常":
                     print("请求异常")
-                    #logloglog_text += "请求异常\n"
-                    #logger.info(#logloglog_text)
                     bot_message_error += 1
                     continue
                 elif usr_token_errow == "请求超时，可能是网络问题":
                     print("----------------出现请求超时情况，终止所有任务--------------------- 问题：get_token()")
                     bot_message += '出现请求超时情况，终止所有任务 问题：get_token()'
-                    #logloglog_text += "请求超时，可能是网络问题\n"
-                    #logger.info(#logloglog_text)
                     bot_message_error = cookies
                     break
                 else:
                     print("错误回复",usr_token_errow)
-                    #logloglog_text += f"错误回复{usr_token_errow}\n"
-                    #logger.info(#logloglog_text)
                     bot_message_error += 1
                     continue
             
             print("——————格式化成功！！移交数据库——————")
-            #logloglog_text += "——————格式化成功！！移交数据库——————\n"
             with open(file_name, 'r', encoding='utf-8') as json_file:
                 existing_data = json.load(json_file)
             new_user_data = {
@@ -350,13 +307,9 @@ def Env_cookie_format(Env_cookies):
             with open(file_name, 'w', encoding='utf-8') as json_file:
                 json.dump(existing_data, json_file, indent=2, ensure_ascii=False)
             print(f"{name} 用户数据验证成功")
-            #logloglog_text += f"{name} 用户数据验证成功\n"
-            #logger.info(#logloglog_text+"\n")
             bot_message_sure += 1
             bot_message += f"【{name} {account} 成功】\n"
     huizong_message = (f"{bot_message}———————————— \n数据库数据总报告\n总共：{cookies}个\n成功：{bot_message_sure}个\n失败：{bot_message_error}个")
-    #logloglog_text = f"数据库数据总报告\n总共：{cookies}个\n成功：{bot_message_sure}个\n失败：{bot_message_error}个\n"
-    #logger.info(#logloglog_text)
     print(huizong_message)
     bot_message_tuisong = load_send()
     if bot_message_tuisong is not None:
