@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-File: xixunyun_sign.py(习讯云打卡任务库)
 Author: lanzeweie
 Date: 2024/3/11 13:00
 cron: None
-new Env('习讯云打卡任务库');
+new Env('习讯云配置文件 ua');
 Update: 2024/3/11
 """
 import requests

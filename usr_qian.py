@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Author: lanzeweie
+Date: 2024/3/11 13:00
+cron: None
+new Env('习讯云配置文件 qian');
+Update: 2024/3/11
+"""
 import requests
 import re
 import json
