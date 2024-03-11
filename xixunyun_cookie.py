@@ -1,8 +1,21 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+File: xixunyun_cookie.py(习讯云打卡数据库)
+Author: lanzeweie
+Date: 2024/3/11 13:00
+cron: 54 8 * * *
+new Env('习讯云打卡数据库');
+Update: 2024/3/11
+"""
+
 import json
 #from loglog import XXYLogger
 from usr_ua import Xixunyun_ua
 from usr_token import Xixunyun_login
 import os
+import sys
 ####################################
 #logger = XXYLogger('database', log_file='database.log')
 weizhi = os.path.dirname(os.path.abspath(__file__))
@@ -38,7 +51,6 @@ def Cookie():
 
 # 加载通知服务
 def load_send():
-    import sys
     cur_path = os.path.abspath(os.path.dirname(__file__))
     sys.path.append(cur_path)
     if os.path.exists(cur_path + "/sendNotify.py"):
@@ -199,6 +211,8 @@ def Env_cookie_format(Env_cookies):
                     elif usr_token_errow == "请求超时，可能是网络问题":
                         print("----------------出现请求超时情况，终止所有任务---------------------")
                         #logloglog_text += "请求超时，可能是网络问题\n"
+                        print("----------------出现请求超时情况，终止所有任务--------------------- 问题：get_token()")
+                        bot_message += '出现请求超时情况，终止所有任务 问题：get_token()'
                         existing_user['jiuxu'] = False
                         with open(file_name, 'w', encoding='utf-8') as file:
                             json.dump(data, file, indent=2, ensure_ascii=False)
@@ -216,7 +230,15 @@ def Env_cookie_format(Env_cookies):
                         bot_message_error += 1
                         bot_message += f"{name} {account} 【失败】\n"
                         continue
-            
+            else:
+                print(usr_ua_insp)
+                logloglog_text += f"意外错误{usr_ua_insp}\n"
+                existing_user['jiuxu'] = False
+                with open(file_name, 'w', encoding='utf-8') as file:
+                    json.dump(data, file, indent=2, ensure_ascii=False)
+                bot_message_error += 1
+                bot_message += f"{name} {account} 【失败】\n"
+                continue
             # Check if other attributes match and update the database if necessary
             if all(existing_user.get(key) == value for key, value in {
                 'model': model,
@@ -281,10 +303,11 @@ def Env_cookie_format(Env_cookies):
                     bot_message_error += 1
                     continue
                 elif usr_token_errow == "请求超时，可能是网络问题":
-                    print("----------------出现请求超时情况，终止所有任务---------------------")
+                    print("----------------出现请求超时情况，终止所有任务--------------------- 问题：get_token()")
+                    bot_message += '出现请求超时情况，终止所有任务 问题：get_token()'
                     #logloglog_text += "请求超时，可能是网络问题\n"
                     #logger.info(#logloglog_text)
-                    bot_message_error += 1
+                    bot_message_error = cookies
                     break
                 else:
                     print("错误回复",usr_token_errow)

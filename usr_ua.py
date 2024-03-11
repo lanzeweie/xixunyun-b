@@ -5,6 +5,8 @@ import os
 ##################################################
 weizhi = os.path.dirname(os.path.abspath(__file__))
 ##################导入配置文件#####################
+# 直接运行可以获得 用户第一次打卡的地址与经纬度  需要在下方填写 Token 与 学校代码
+##################################################
 try:
     with open(f'{weizhi}{os.sep}data{os.sep}config.json', 'r',encoding="utf-8") as file:
         data = json.load(file)
@@ -61,3 +63,12 @@ class Xixunyun_ua():
             return mid_sign_address,mid_sign_longitude,mid_sign_latitude
         except:
             return data
+
+if __name__ == "__main__":
+    #Token
+    Token = ''
+    #学校代码
+    school_id = 837
+    usr_ua_insp = Xixunyun_ua(Token,school_id).get_ua()
+    # 返回值  地址，经度，纬度
+    print(usr_ua_insp)

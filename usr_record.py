@@ -21,7 +21,7 @@ class Xixunyun_record():
         self.token = token
         self.school_id = school_id
 
-    def get_record(self):
+    def get_record(self,all=None):
         current_date = datetime.now()
         formatted_date = current_date.strftime("%Y-%m").lstrip("0")
         # 如果月份部分以"0"开头，去掉这个"0"
@@ -75,10 +75,28 @@ class Xixunyun_record():
                     'address_name': record['address_name'],
                     'sign_time_text': record['sign_time_text']
                 }
-                print(f'【警告】本月异常字段[{i}]: {abnormal_data}')
+                print(f'本月异常字段【{i}】: {abnormal_data}')
             # 上班次数 假期次数 异常次数 
+           
+            if all == "yes":
+                extracted_data = []
+                for item in response_json['data']['list']:
+                    address = item['address']
+                    longitude = item['longitude']
+                    latitude = item['latitude']
+                    sign_time_text = item['sign_time_text']
+                    extracted_data.append({'address': address, 'longitude': longitude, 'latitude': latitude, 'sign_time_text': sign_time_text})
+                return sign_ins,jiaqi_ins,abnormal_records_len,extracted_data
             return sign_ins,jiaqi_ins,abnormal_records_len
         except:
             return response_json
 
-        
+if __name__ == "__main__":
+    #Token
+    Token = ''
+    #学校代码
+    school_id = 837
+    usr_record_insp = Xixunyun_record(Token,school_id).get_record(all="yes")
+    # 返回值  上班天数 请假天数 异常天数,还有用户本月所有的签到情况(地址与经纬度)
+    print(usr_record_insp)
+    

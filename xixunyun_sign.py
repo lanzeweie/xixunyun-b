@@ -1,8 +1,20 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+File: xixunyun_sign.py(习讯云打卡任务库)
+Author: lanzeweie
+Date: 2024/3/11 13:00
+cron: 55 8 * * *
+new Env('习讯云打卡任务库');
+Update: 2024/3/11
+"""
+
 from usr_record import Xixunyun_record
 import json
 from datetime import datetime, timedelta
 import re
-import chinese_calendar
+import chinese_calendar as calendar 
 import random
 import rsa
 import base64
@@ -66,11 +78,18 @@ def ageing(moth):
         return False    
 
 def jiejiari():
-    # 判断今天是否是节假日
+    # 判断今天是否是节假日,并且移除星期六星期天，只对节假日生效
+    #april_last = datetime.date(2024, 5, 1)
     today = datetime.today().date()
-    is_holiday = chinese_calendar.is_holiday(today)
-    if is_holiday:
-        return True
+    on_holiday, holiday_name = calendar.get_holiday_detail(today)
+    #print(on_holiday,holiday_name)
+    if on_holiday == True:
+        if holiday_name != None:
+            return True
+        else:
+            return False
+    elif on_holiday == False:
+        return False
     else:
         return False
 
@@ -151,18 +170,22 @@ async def qiandao(token,school_id,province,city,address,address_name,latitude,lo
     while True:
         now = datetime.now()
         target_time = now.replace(hour=target_hour, minute=target_minute, second=0, microsecond=0)
+        early_time = None
         if now.hour > target_hour or (now.hour == target_hour and now.minute > target_minute):
             delta_sec = 0
             #logloglog_text = (f"{name} {account} {time} 已过签到时间，直接进行签到\n")
             print(f"{name} {account} {time} 已过签到时间，直接进行签到")
         else:
             delta_sec = (target_time - now).total_seconds()
-        # 10% 的概率提前 1 到 5 分钟
-        if rnd.random() < 0.1:
-            early_sec = rnd.randint(1, 5) * 60
-            # 如果 delta_sec 小于提前打印的时间，就不提前打印
-            if delta_sec > early_sec:
-                delta_sec -= early_sec
+            # 10% 的概率提前 1 到 5 分钟
+            if rnd.random() < 0.55:
+                early_sec = rnd.randint(1, 5) * 60
+                print(f"【签到系统】{name} {account}触发提前机制，提前{early_sec}s")
+                # 如果 delta_sec 小于提前打印的时间，就不提前打印
+                if delta_sec > early_sec:
+                    delta_sec -= early_sec
+                    early_time = target_time - timedelta(seconds=early_sec)  # 计算提前后的时间
+
         try:
             await asyncio.sleep(delta_sec)
             latitude_bs4,longitude_bs4 = encrypt(latitude, longitude)
@@ -182,6 +205,9 @@ async def qiandao(token,school_id,province,city,address,address_name,latitude,lo
                 #logloglog_text += (f"{name} {account} 签到成功，连续签到 {qiandao_days}天")
                 print(f"{name} {account} 签到成功，连续签到 {qiandao_days}天")
                 #logger.inf.info(#logloglog_text)
+                if early_time is not None:
+                    tiqiandaka = f"{early_time.hour}:{early_time.minute}"
+                    return True,(f"{name} {account} 成功"),qiandao_days,tiqiandaka
                 return True,(f"{name} {account} 成功"),qiandao_days
             elif qiandao[0] == False:
                 qiandao_errow = qiandao[1]
@@ -323,7 +349,7 @@ async def main():
                         continue
     #logloglog_text = "所有用户任务已分配完毕，等待结果\n"
     #logger.inf.info(#logloglog_text)
-    print("————————————————————————————————————————\n【任务库】所有用户任务已分配完毕，等待结果")
+    print("——————————————————————————————\n【任务库】所有用户任务已分配完毕，等待结果")
     end_fenpei_time = time.time()
     execution_fenpei_time = end_fenpei_time - start_fenpei_time
     print(f"【任务库】所有任务分配所花时间【{execution_fenpei_time:.2f}秒】")
@@ -337,10 +363,12 @@ async def main():
     for result in results:
         if isinstance(result, tuple):
             if result[0] == True:
-                #logloglog_text += (f"{result[1]}\n")
-                #logloglog_text += (f"已经连续签到 {result[2]} 天\n")
-                bot_message += (f"{result[1]} 成功,连续签到【{result[2]}】天\n")
-                bot_message_sure += 1
+                if len(result) >= 4:  # 确保元组有足够的元素
+                    bot_message += (f"{result[1]} 成功,连续签到【{result[2]}】天,签到时间{result[3]}\n")
+                    bot_message_sure += 1
+                else:
+                    bot_message += (f"{result[1]} 成功,连续签到【{result[2]}】天\n")
+                    bot_message_sure += 1
             elif result[0] == False:
                 #logloglog_text += (f"{result[1]}\n")
                 #logloglog_text += (f"{result[2]}\n")
@@ -354,7 +382,7 @@ async def main():
     #logloglog_text += "\n已获得所有结果，任务结束\n"
     end_task_back = time.time()
     execution_task_time = end_task_back - start_task_back
-    print(f"\n【任务库】所有任务执行所花时间【{execution_task_time:.2f}秒】\n————————————————————————————————————————")
+    print(f"\n【任务库】所有任务执行所花时间【{execution_task_time:.2f}秒】\n————————————————————")
     #logloglog_text += (f"所有任务执行所花时间【{execution_task_time:.2f}秒】")
     bot_message += (f"所有任务执行所花时间【{execution_task_time:.2f}秒】")
     #logger.inf.info(#logloglog_text)
@@ -362,7 +390,7 @@ async def main():
     print("结束")
     #logloglog_text = (f"{bot_message}\n———————————\n任务库数据汇总\n用户总数：{users_len}个\n成功：{bot_message_sure}个\n失败:{bot_message_error}个\n")
     
-    huizong_message = (f"{bot_message}\n————————————————————————————————————————\n任务库数据汇总\n用户总数：{users_len}个\n成功：{bot_message_sure}个\n失败:{bot_message_error}个")
+    huizong_message = (f"{bot_message}\n———————————\n任务库数据汇总\n用户总数：{users_len}个\n成功：{bot_message_sure}个\n失败:{bot_message_error}个")
     print(huizong_message)
     bot_message_tuisong = load_send()
     if bot_message_tuisong is not None:
