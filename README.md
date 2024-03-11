@@ -147,7 +147,7 @@ mothxiu：一个月的月休上限
 ```
 pip install -r  requirements.txt
 ```
-`env.json` 填写用户的COOKIE   
+`data/env.json` 填写用户的COOKIE   
 
 
 首先建立数据库  
