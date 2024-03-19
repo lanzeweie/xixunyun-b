@@ -19,6 +19,7 @@ import random
 import rsa
 import base64
 from usr_qian import Xixunyun_qian
+from usr_token import Xixunyun_login
 import asyncio
 import time
 import os
@@ -238,6 +239,8 @@ async def main():
         account = user['account']
         time_user = user['time']
         jiuxu = user['jiuxu']
+        password = user['password']
+        mac = user['mac']
 
         shushushu+=1
         print(f"\n-------- 当前用户 姓名：{name} 手机号：{phone} 学号：{account}   -------------本次序列第【{shushushu}】位用户-------------\n") 
@@ -259,15 +262,46 @@ async def main():
                     continue
                 elif user_record_errow == "请求超时，可能是网络问题":
                     print("----------------出现请求超时情况，终止所有任务---------------------")
-                    break
+                    break 
+                elif user_record_errow['code'] == 40511 and user_record_errow['message'] == '登录超时':
+                    print("【补救措施-登录超时】出现登录超时情况，重新获得用户Token")
+                    usr_token_insp = Xixunyun_login(school_id, password, account, model, mac).get_token()
+                    usr_token_insp_len = len(usr_token_insp)
+                    if usr_token_insp_len > 7:
+                        user_name, school_id, token, user_number, bind_phone, user_id, class_name, entrance_year, graduation_year = usr_token_insp
+                        user_record = Xixunyun_record(token,school_id).get_record()
+                        print(f"【补救措施-登录超时】成功获得用户Token: {token}")
+                        if len(user_record) > 3:
+                            user_record_errow = user_record
+                            print("【补救措施-登录超时】错误[record]回复，用户[record]查询失败",user_record_errow)
+                            continue
+                    else:
+                        print(f"【补救措施-登录超时】失败，无法获得用户 Token")
+                        continue
                 else:
                     print("错误[record]回复，用户[record]查询失败",user_record_errow)
                     continue
-            else:
-                sign_ins,jiaqi_ins,abnormal_records_len = user_record
-                print(f"——————————————————————\n本用户本月异常次数：{abnormal_records_len}\n——————————————————————\n")
-                if jiejiari() is True:
-                    print("今天是节假日,强制放假")
+            sign_ins,jiaqi_ins,abnormal_records_len = user_record
+            print(f"——————————————————————\n本用户本月异常次数：{abnormal_records_len}\n——————————————————————\n")
+            if jiejiari() is True:
+                print("今天是节假日,强制放假")
+                address = home_name_guishu
+                address_name = home_name
+                province,city = extract_province_city(address)
+                latitude = home_latit
+                longitude = home_long
+                remark = "2"
+                print(f"【创造计划任务】\n姓名：{name},地址：{address},纬度：{latitude},经度：{longitude},定时任务：{time_user},签到 模式 [放假]")
+                task = asyncio.create_task(qiandao(token,school_id,province,city,address,address_name,latitude,longitude,remark,time_user,name,account))
+                qiandao_TF.append(task)                        
+                continue
+            elif jiejiari() is False:
+                #最大月休次数 本月已上班次数 本月休息次数
+                print(f"【数据分析】\n【结论】最大月休数 {mothxiu},本月已上班打卡次数 {sign_ins},本月休息次数 {jiaqi_ins}")
+                print("【?】判断是否需要上班.................")
+                user_yuexiu_FT = yuexiu(mothxiu,sign_ins,jiaqi_ins)
+                if user_yuexiu_FT is True:
+                    print("【√】概率判断为[今天休息]")
                     address = home_name_guishu
                     address_name = home_name
                     province,city = extract_province_city(address)
@@ -278,37 +312,20 @@ async def main():
                     task = asyncio.create_task(qiandao(token,school_id,province,city,address,address_name,latitude,longitude,remark,time_user,name,account))
                     qiandao_TF.append(task)                        
                     continue
-                elif jiejiari() is False:
-                    #最大月休次数 本月已上班次数 本月休息次数
-                    print(f"【数据分析】\n【结论】最大月休数 {mothxiu},本月已上班打卡次数 {sign_ins},本月休息次数 {jiaqi_ins}")
-                    print("【?】判断是否需要上班.................")
-                    user_yuexiu_FT = yuexiu(mothxiu,sign_ins,jiaqi_ins)
-                    if user_yuexiu_FT is True:
-                        print("【√】概率判断为[今天休息]")
-                        address = home_name_guishu
-                        address_name = home_name
-                        province,city = extract_province_city(address)
-                        latitude = home_latit
-                        longitude = home_long
-                        remark = "2"
-                        print(f"【创造计划任务】\n姓名：{name},地址：{address},纬度：{latitude},经度：{longitude},定时任务：{time_user},签到 模式 [放假]")
-                        task = asyncio.create_task(qiandao(token,school_id,province,city,address,address_name,latitude,longitude,remark,time_user,name,account))
-                        qiandao_TF.append(task)                        
-                        continue
-                        
-                    elif user_yuexiu_FT is False:
-                        print("【√】概率判断为[今天上班]")
-                        #获取用户的地址
-                        address = word_name_guishu
-                        address_name = word_name
-                        province,city = extract_province_city(address)
-                        latitude = word_latit
-                        longitude = word_long
-                        remark = "0"
-                        print(f"【创造计划任务】\n姓名：{name},地址：{address},纬度：{latitude},经度：{longitude},定时任务：{time_user},签到 模式 [上班]")
-                        task = asyncio.create_task(qiandao(token,school_id,province,city,address,address_name,latitude,longitude,remark,time_user,name,account))
-                        qiandao_TF.append(task)                        
-                        continue
+                    
+                elif user_yuexiu_FT is False:
+                    print("【√】概率判断为[今天上班]")
+                    #获取用户的地址
+                    address = word_name_guishu
+                    address_name = word_name
+                    province,city = extract_province_city(address)
+                    latitude = word_latit
+                    longitude = word_long
+                    remark = "0"
+                    print(f"【创造计划任务】\n姓名：{name},地址：{address},纬度：{latitude},经度：{longitude},定时任务：{time_user},签到 模式 [上班]")
+                    task = asyncio.create_task(qiandao(token,school_id,province,city,address,address_name,latitude,longitude,remark,time_user,name,account))
+                    qiandao_TF.append(task)                        
+                    continue
     print("——————————————————————————————\n【任务库】所有用户任务已分配完毕，等待结果")
     end_fenpei_time = time.time()
     execution_fenpei_time = end_fenpei_time - start_fenpei_time
