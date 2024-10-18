@@ -141,7 +141,7 @@ mothxiu：一个月的月休上限
     ]
 }
 ```
-[联系我获取公钥](https://afdian.net/item/0909c0cedf8411eeb6145254001e7c00)  并非强求，你可以通过阅读 习讯云源代码 获得。  
+[联系我获取公钥](https://afdian.com/item/0909c0cedf8411eeb6145254001e7c00)  并非强求，你可以通过阅读 习讯云源代码 获得。  
 
 青龙面板同样修改    
 青龙面板->脚本管理->lanzeweie_xixunyun-b->data->config.json    
