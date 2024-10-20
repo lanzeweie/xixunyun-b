@@ -140,16 +140,16 @@ def Env_cookie_format(Env_cookies):
             print("正在|验证Token是否可用")
             Token = (existing_user.get('token'))
             usr_ua_insp = Xixunyun_ua(Token,school_id).get_ua()
-            usr_ua_insp_len = len(usr_ua_insp)
-            if usr_ua_insp_len <= 3:
+            #usr_ua_insp_len = len(usr_ua_insp)
+            if usr_ua_insp['code'] == 20000:
                 bot_message_sure += 1
                 print("用户Token已是激活状态")
                 bot_message += f"{name} {account} 【成功】\n"
-                word_name_ua = usr_ua_insp[0]
-                word_long_ua = usr_ua_insp[1]
-                word_latit_ua = usr_ua_insp[2]
-                print(f"用户初次签到地址为：{word_name_ua}, 经度：{word_long_ua}, 纬度：{word_latit_ua}")
-            elif usr_ua_insp_len >3:
+                #word_name_ua = usr_ua_insp[0]
+                #word_long_ua = usr_ua_insp[1]
+                #word_latit_ua = usr_ua_insp[2]
+                #print(f"用户初次签到地址为：{word_name_ua}, 经度：{word_long_ua}, 纬度：{word_latit_ua}")
+            elif usr_ua_insp != 20000:
                 usr_ua_errow = usr_ua_insp
                 if usr_ua_errow == "请求异常":
                     print("请求异常")
