@@ -233,4 +233,13 @@ _有小概率发生不会休满一个月最大月休数_
 日志管理   
 
 ### License
-This project is licensed under the MIT [License](LICENSE) - see the license file file for details
+
+本项目采用 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) 许可证进行授权。具体条款如下：
+
+- **署名（BY）**：您必须给予适当的署名，提供指向许可证的链接，并说明是否进行了更改。您可以以任何合理的方式做到这一点，但不得以任何方式暗示授权人对您或您的使用方式的支持。
+  
+- **非商业性（NC）**：您不得将本作品用于商业目的。
+  
+- **禁止演绎（ND）**：如果您重混、转换或以其他方式构建本作品，您不得分发修改后的作品。
+
+如需了解更多详细信息，请访问 [Creative Commons](https://creativecommons.org/licenses/by-nc-nd/4.0/) 网站。
