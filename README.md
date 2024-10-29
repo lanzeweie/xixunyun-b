@@ -242,4 +242,4 @@ _有小概率发生不会休满一个月最大月休数_
   
 - **禁止演绎（ND）**：如果您重混、转换或以其他方式构建本作品，您不得分发修改后的作品。
 
-如需了解更多详细信息，请访问 [Creative Commons](https://creativecommons.org/licenses/by-nc-nd/4.0/) 网站。
+如需了解更多详细信息，请查看 [Creative Commons](./LICENSE)
