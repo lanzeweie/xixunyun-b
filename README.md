@@ -177,7 +177,7 @@ ql repo https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_si
 ```
 如果失败则使用国内加速
 ```
-ql repo https://ghproxy.com/https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "" "^usr_.*|data/|sendNotify" "" "json|py" 
+ql repo https://ghp.ci/https://github.com/lanzeweie/xixunyun-b.git "xixunyun_cookie|xixunyun_sign" "" "^usr_.*|data/|sendNotify" "" "json|py" 
 ```
 最后再次在名称填写 习讯云打卡签到-B 即可 
 
