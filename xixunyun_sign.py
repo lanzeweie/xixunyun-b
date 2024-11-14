@@ -10,19 +10,22 @@ new Env('习讯云打卡任务库');
 Update: 2024/3/11
 """
 
-from usr_record import Xixunyun_record
-import json
-from datetime import datetime, timedelta
-import re
-import chinese_calendar as calendar 
-import random
-import rsa
-import base64
-from usr_qian import Xixunyun_qian
-from usr_token import Xixunyun_login
 import asyncio
-import time
+import base64
+import json
 import os
+import random
+import re
+import time
+from datetime import datetime, timedelta
+
+import chinese_calendar as calendar
+import rsa
+
+from usr_qian import Xixunyun_qian
+from usr_record import Xixunyun_record
+from usr_token import Xixunyun_login
+
 ##################################################
 weizhi = os.path.dirname(os.path.abspath(__file__))
 ##################导入配置文件#####################
@@ -34,9 +37,12 @@ try:
         from_config = config['from']
         platform_config = config['platform']
         key_config = r"{}".format(config['key'])
+        if key_config == "":
+            print("未填写习讯云加密密钥 | 请在配置文件：config.json 的key处 填写合法密钥")
+            os._exit(0)
 except:
     print("配置文件错误，结束运行 | 配置文件：config.json")
-    os._exit()
+    os._exit(0)
 # 加载通知服务
 def load_send():
     import sys
