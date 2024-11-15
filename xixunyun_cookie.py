@@ -166,6 +166,7 @@ def validate_and_update_user(user, Env_cookies_value, data, file_name, bot_messa
                     token_value = new_token[2]
                     existing_user['token'] = token_value
                     save_json_atomic(file_name, data)
+                    existing_user['jiuxu'] = True
                     print("用户Token信息更新成功")
                     bot_message_sure += 1
                     bot_message += f"{Env_cookies_value['name']} {Env_cookies_value['account']} 【成功】\n"
