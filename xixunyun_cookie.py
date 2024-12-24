@@ -14,6 +14,7 @@ import json
 import os
 import re
 import sys
+
 from usr_token import Xixunyun_login
 from usr_ua import Xixunyun_ua
 
@@ -125,11 +126,19 @@ def validate_and_update_user(user, Env_cookies_value, data, file_name, bot_messa
     try:
         if existing_user:
             print(f"{Env_cookies_value['name']} 用户存在于数据库中，验证 Token")
-            # 优先从 Env_cookies_value 获取 Token，否则从 existing_user 获取
+            # 优先从 Env_cookies_value 获取 Token，否则从 existing_user 获取            
+            # 更新用户信息，以环境变量中的值为主
+            update_keys = [
+                'moth', 'time', 'mothxiu', 'word_long', 'word_latit', 'word_name',
+                'word_name_guishu', 'home_long', 'home_latit', 'home_name',
+                'home_name_guishu', 'model'
+            ]
+            for key in update_keys:
+                existing_user[key] = Env_cookies_value[key]
             token = Env_cookies_value.get('token', existing_user.get('token'))
             if not token:
                 print(f"{Env_cookies_value['name']} {Env_cookies_value['account']} 缺少 Token 信息")
-                bot_message += f"{Env_cookies_value['name']} {Env_cookies_value['account']} 【缺少 Token】\n"
+                bot_message += f"{Env_cookies_value.get('name')} {Env_cookies_value['account']} 【缺少 Token】\n"
                 bot_message_error += 1
                 return bot_message, bot_message_sure, bot_message_error
 
@@ -149,7 +158,7 @@ def validate_and_update_user(user, Env_cookies_value, data, file_name, bot_messa
                 print("用户Token已是激活状态")
                 existing_user['jiuxu'] = True
                 bot_message_sure += 1
-                bot_message += f"{Env_cookies_value['name']} {Env_cookies_value['account']} 【成功】\n"
+                bot_message += f"{Env_cookies_value.get('name')} {Env_cookies_value.get('account')} 【成功】\n"
             else:
                 # 验证失败，尝试重新获取
                 print("验证Token失败，尝试重新获取")
