@@ -1,0 +1,12 @@
+{
+    "name":"习讯云配置文件 | Key可以从 习讯云网页源码获得 | 也可以联系我 WX lin_tongsheng ",
+    "name2":"注意：代码均为开源（仓库 https://github.com/lanzeweie/xixunyun-b)，如果你是付费购买请退款。我并不会得到收益，也不会利用代码进行代打卡等商业行为。项目本身也没有收费行为",
+    "config":[
+        {
+            "version": "4.9.7",
+            "from":"app",
+            "platform": "android",
+            "key":""
+        }
+    ]
+}
